@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestro Bautizo - Lucía & Gustavo</title>
+    
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts for elegant typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Raleway:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Custom styles to match the invitation's theme */
+        body { 
+            font-family: 'Raleway', sans-serif; 
+            background-color: #FBF9F6; 
+            line-height: 1.6;
+        }
+        .font-serif-elegant { font-family: 'Cormorant Garamond', serif; }
+        .brand-color-text { color: #8C6B5D; }
+        .brand-color-bg { background-color: #D3B8AE; }
+        .brand-color-bg-hover:hover { background-color: #C1A59B; }
+        .brand-color-border { border-color: #EAE0DA; }
+        
+        /* Improved radio button styling */
+        .custom-radio input[type="radio"] { display: none; }
+        .custom-radio label { 
+            display: inline-block; 
+            padding: 12px 24px; 
+            border: 2px solid #EAE0DA; 
+            border-radius: 9999px; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            user-select: none;
+            font-weight: 500;
+        }
+        .custom-radio input[type="radio"]:checked + label { 
+            background-color: #D3B8AE; 
+            color: white; 
+            border-color: #D3B8AE;
+            transform: scale(1.05);
+        }
+        .custom-radio label:hover {
+            border-color: #C1A59B;
+            background-color: rgba(211, 184, 174, 0.1);
+        }
+        
+        /* View transitions */
+        .section-fade { 
+            transition: opacity 0.7s ease-in-out, transform 0.7s ease-in-out; 
+        }
+        .section-hidden { 
+            opacity: 0; 
+            transform: translateY(20px); 
+            pointer-events: none; 
+            position: absolute; 
+            width: 100%; 
+        }
+        .dynamic-field { 
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+            max-height: 0; 
+            overflow: hidden; 
+            opacity: 0; 
+            transform: translateY(-10px); 
+        }
+        .dynamic-field.visible { 
+            max-height: 1000px; /* Increased to support multiple companions */
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+        
+        /* Button improvements */
+        button:disabled { 
+            opacity: 0.7; 
+            cursor: not-allowed; 
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #D3B8AE 0%, #C1A59B 100%);
+            box-shadow: 0 4px 15px rgba(211, 184, 174, 0.4);
+        }
+        .btn-primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #C1A59B 0%, #B39489 100%);
+            box-shadow: 0 6px 20px rgba(211, 184, 174, 0.6);
+        }
+        
+        /* Loading spinner */
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #ffffff;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive improvements */
+        @media (max-width: 640px) {
+            .custom-radio {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .custom-radio label {
+                width: 100%;
+                text-align: center;
+            }
+        }
+        
+        /* Message styling */
+        .message-box {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+            text-align: center;
+            animation: slideInDown 0.4s ease-out;
+        }
+        .error-message {
+            background-color: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+        }
+        .success-message {
+            background-color: #dcfce7;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+        
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Input focus effects */
+        input:focus, select:focus {
+            box-shadow: 0 0 0 3px rgba(211, 184, 174, 0.3);
+            border-color: #C1A59B;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <main class="min-h-screen flex flex-col items-center justify-center p-4">
+        
+        <!-- Main Invitation View -->
+        <div id="invitationView" class="w-full section-fade">
+            <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+                <!-- Invitation Image -->
+                <div>
+                    <img src="https://i.imgur.com/i0FGY8T.jpeg" 
+                         alt="Invitación al Bautizo de Lucía Clementina y Gustavo Adolfo" 
+                         class="w-full h-auto"
+                         loading="lazy">
+                </div>
+
+                <!-- RSVP Form Section -->
+                <div class="p-6 sm:p-10 text-center">
+                    <h2 class="font-serif-elegant text-4xl brand-color-text mb-4">Confirmar Asistencia</h2>
+                    <p class="mb-8 max-w-md mx-auto text-gray-600">
+                        Nos encantaría celebrar juntos este día tan especial, agradecemos tu confirmación de asistencia antes del 25 de Junio.
+                    </p>
+                    
+                    <!-- Error message container -->
+                    <div id="errorMessage" class="message-box error-message"></div>
+                    
+                    <form id="rsvpForm" class="space-y-6 text-left">
+                        <!-- Form fields -->
+                        <div>
+                            <label for="fullName" class="block font-semibold mb-2 brand-color-text">
+                                Tu nombre completo: <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" 
+                                   id="fullName" 
+                                   name="fullName" 
+                                   required 
+                                   class="w-full px-4 py-3 border brand-color-border rounded-lg focus:ring-2 focus:ring-offset-2 focus:ring-[#D3B8AE] focus:outline-none transition"
+                                   placeholder="Ingresa tu nombre completo">
+                        </div>
+                        
+                        <div>
+                            <label for="phone" class="block font-semibold mb-2 brand-color-text">
+                                Teléfono celular: <span class="text-red-500">*</span>
+                            </label>
+                            <input type="tel" 
+                                   id="phone" 
+                                   name="phone" 
+                                   required 
+                                   class="w-full px-4 py-3 border brand-color-border rounded-lg focus:ring-2 focus:ring-offset-2 focus:ring-[#D3B8AE] focus:outline-none transition"
+                                   placeholder="Ej: 492 123 4567">
+                        </div>
+
+                        <div>
+                            <label for="attendance" class="block font-semibold mb-2 brand-color-text">
+                                ¿Podrás acompañarnos? <span class="text-red-500">*</span>
+                            </label>
+                            <select id="attendance" 
+                                    name="attendance" 
+                                    required
+                                    class="w-full px-4 py-3 border brand-color-border rounded-lg focus:ring-2 focus:ring-offset-2 focus:ring-[#D3B8AE] focus:outline-none transition bg-white appearance-none">
+                                <option value="">-- Elige una opción --</option>
+                                <option value="si">Sí, con gusto asistiré</option>
+                                <option value="no">Lamento no poder asistir</option>
+                                <option value="talvez">Tal vez pueda asistir</option>
+                            </select>
+                        </div>
+                        
+                        <div id="guestCountContainer" class="dynamic-field">
+                            <label for="guestCount" class="block font-semibold mb-2 brand-color-text">
+                                ¿Cuántas personas (incluyéndote) asistirán?
+                            </label>
+                            <input type="number" 
+                                   id="guestCount" 
+                                   name="guestCount" 
+                                   min="1" 
+                                   max="10"
+                                   value="1" 
+                                   class="w-full px-4 py-3 border brand-color-border rounded-lg focus:ring-2 focus:ring-offset-2 focus:ring-[#D3B8AE] focus:outline-none transition">
+                        </div>
+                        
+                        <div id="companionsContainer" class="space-y-4"></div>
+                        
+                        <div id="travelQuestionContainer" class="dynamic-field text-center">
+                            <p class="block text-left font-semibold mb-3 brand-color-text">
+                                ¿Viajas desde fuera del estado de Zacatecas?
+                            </p>
+                            <div class="flex justify-center items-center space-x-4 custom-radio">
+                                <input type="radio" id="travelYes" name="travel" value="si">
+                                <label for="travelYes">Sí</label>
+                                <input type="radio" id="travelNo" name="travel" value="no">
+                                <label for="travelNo">No</label>
+                            </div>
+                        </div>
+                        
+                        <div class="pt-4 text-center">
+                            <button type="submit" 
+                                    id="submitBtn" 
+                                    class="w-full sm:w-auto min-w-[200px] h-14 flex items-center justify-center px-12 py-4 btn-primary text-white font-bold rounded-full transform hover:scale-105 transition-all duration-300">
+                                <span id="submitText">Enviar Confirmación</span>
+                                <div id="submitSpinner" class="loading-spinner hidden"></div>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Gift Registry Link -->
+                    <div class="mt-8 pt-6 border-t brand-color-border">
+                        <p class="font-semibold brand-color-text mb-3">Mesa de Regalos</p>
+                        <a href="https://mesaderegalos.liverpool.com.mx/milistaderegalos/51674145" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="inline-block px-8 py-3 text-sm font-semibold brand-color-text border-2 brand-color-border rounded-full hover:bg-gray-100 transition-all duration-300">
+                            Ver Mesa de Regalos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confirmation & Guide View -->
+        <div id="confirmationView" class="w-full section-fade section-hidden">
+            <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden p-6 sm:p-10">
+                <div class="text-center">
+                    <h1 id="confirmationTitle" class="font-serif-elegant text-4xl sm:text-5xl brand-color-text mb-2">¡Gracias por confirmar!</h1>
+                    <p class="mb-8 text-lg text-gray-600">¡Qué alegría que nos acompañes!</p>
+                </div>
+
+                <!-- Locations Section -->
+                <div class="mb-12">
+                     <h2 class="font-serif-elegant text-3xl brand-color-text mb-6 text-center">
+                         Aquí te compartimos las ubicaciones.
+                     </h2>
+                    
+                     <!-- Direct navigation buttons -->
+                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                         <a href="https://www.google.com/maps/dir/?api=1&destination=Santuario+de+Nuestra+Señora+de+la+Soledad,Jerez,Zacatecas" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            class="flex items-center justify-center w-full text-center px-6 py-3 btn-primary text-white font-bold rounded-full transform hover:scale-105 transition-all duration-300">
+                             Ir a la Iglesia
+                         </a>
+                         <a href="https://www.google.com/maps/dir/?api=1&destination=Lot+11+Eventos,Jerez,Zacatecas" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            class="flex items-center justify-center w-full text-center px-6 py-3 btn-primary text-white font-bold rounded-full transform hover:scale-105 transition-all duration-300">
+                             Ir al Salón Lot 11
+                         </a>
+                     </div>
+                </div>
+                
+                <!-- Visitor Guide Section (for travelers only) -->
+                <div id="travelerInfo" class="hidden space-y-12">
+                    <div><h2 class="font-serif-elegant text-3xl brand-color-text mb-6 text-center">Sugerencias de Hospedaje</h2><div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 text-left"><div class="border border-gray-200 rounded-lg p-6"> <h3 class="font-serif-elegant text-xl brand-color-text mb-4">En Jerez</h3> <p class="mb-6 text-sm">Cerca de la misa y recepción.</p> <ul class="space-y-4"> <li><a href="https://www.google.com/maps/search/?api=1&query=Hotel+Leo+Jerez" target="_blank" class="font-semibold hover:underline">Hotel Leo</a></li> <li><a href="https://www.google.com/maps/search/?api=1&query=Hotel+Posada+Santa+Cecilia+Jerez" target="_blank" class="font-semibold hover:underline">Posada Santa Cecilia</a></li> <li><a href="https://www.google.com/maps/search/?api=1&query=Hotel+El+Jardin+Jerez" target="_blank" class="font-semibold hover:underline">Hotel El Jardín</a></li> </ul> </div><div class="border border-gray-200 rounded-lg p-6"> <h3 class="font-serif-elegant text-xl brand-color-text mb-4">En Zacatecas (Centro)</h3> <p class="mb-6 text-sm">Aprox. 50-60 min a Jerez.</p> <ul class="space-y-4"> <li><a href="https://www.google.com/maps/search/?api=1&query=Hotel+Santa+Rita+Zacatecas" target="_blank" class="font-semibold hover:underline">Hotel Santa Rita</a></li> <li><a href="https://www.google.com/maps/search/?api=1&query=Quinta+Real+Zacatecas" target="_blank" class="font-semibold hover:underline">Quinta Real</a></li> <li><a href="https://www.google.com/maps/search/?api=1&query=Hotel+Emporio+Zacatecas" target="_blank" class="font-semibold hover:underline">Hotel Emporio</a></li> </ul> </div><div class="border border-gray-200 rounded-lg p-6"> <h3 class="font-serif-elegant text-xl brand-color-text mb-4">En Zacatecas (Salida)</h3> <p class="mb-6 text-sm">Aprox. 45-50 min a Jerez.</p> <ul class="space-y-4"> <li><a href="https://www.google.com/maps/search/?api=1&query=Hotel+Hacienda+Baruk+Zacatecas" target="_blank" class="font-semibold hover:underline">Hacienda Baruk</a></li> <li><a href="https://www.google.com/maps/search/?api=1&query=Fiesta+Inn+Zacatecas" target="_blank" class="font-semibold hover:underline">Fiesta Inn</a></li> <li><a href="https://www.google.com/maps/search/?api=1&query=Hampton+Inn+by+Hilton+Zacatecas" target="_blank" class="font-semibold hover:underline">Hampton Inn</a></li> </ul> </div></div></div>
+                    <div><h2 class="font-serif-elegant text-3xl brand-color-text mb-6 text-center">Sugerencias Gastronómicas</h2><div class="grid md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4 text-left"><div class="p-2"> <a href="https://www.google.com/maps/search/?api=1&query=Restaurante+La+Compañia+Jerez" target="_blank" class="font-semibold hover:underline">La Compañía</a> <p class="text-sm mt-1 text-gray-600">Ideal para cortes, pizzas y bebidas.</p> </div><div class="p-2"> <a href="https://www.google.com/maps/search/?api=1&query=Restaurante+Solana+Jerez" target="_blank" class="font-semibold hover:underline">Solana</a> <p class="text-sm mt-1 text-gray-600">Cocina regional y cortes finos.</p> </div><div class="p-2"> <a href="https://www.google.com/maps/search/?api=1&query=Restaurante+Casa+Blanca+Jerez" target="_blank" class="font-semibold hover:underline">Casa Blanca</a> <p class="text-sm mt-1 text-gray-600">Platillos variados para toda la familia.</p> </div><div class="p-2"> <a href="https://www.google.com/maps/search/?api=1&query=Restaurante+Romero+Jerez" target="_blank" class="font-semibold hover:underline">Romero</a> <p class="text-sm mt-1 text-gray-600">Cocina de autor con un toque moderno.</p> </div><div class="p-2"> <a href="https://www.google.com/maps/search/?api=1&query=Botica+del+Café+Jerez" target="_blank" class="font-semibold hover:underline">Botica del Café</a> <p class="text-sm mt-1 text-gray-600">Café de especialidad, desayunos y postres.</p> </div><div class="p-2"> <a href="https://www.google.com/maps/search/?api=1&query=Emilias+Jerez" target="_blank" class="font-semibold hover:underline">Emilia's</a> <p class="text-sm mt-1 text-gray-600">Un rincón acogedor para desayunos.</p> </div><div class="p-2"> <a href="https://www.google.com/maps/search/?api=1&query=Kyra+Food+Jerez" target="_blank" class="font-semibold hover:underline">Kyra Food</a> <p class="text-sm mt-1 text-gray-600">Cocina fusión, sushi y snacks.</p> </div><div class="p-2"> <a href="https://www.google.com/maps/search/?api=1&query=Nieves+Paraiso+Jerez" target="_blank" class="font-semibold hover:underline">Nieves Paraíso</a> <p class="text-sm mt-1 text-gray-600">Famosas por sus raspanieves tradicionales.</p> </div></div></div>
+                    <div><h2 class="font-serif-elegant text-3xl brand-color-text mb-6 text-center">Atractivos Turísticos</h2><div class="grid md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4 text-left"><div class="p-2"> <a href="https://www.google.com/maps/search/?api=1&query=Jardín+Rafael+Páez,+Jerez" target="_blank" class="font-semibold hover:underline">Jardín Rafael Páez</a> <p class="text-sm mt-1 text-gray-600">El corazón de Jerez con su kiosco morisco.</p> </div><div class="p-2"> <a href="https://www.google.com/maps/search/?api=1&query=Parroquia+de+la+Inmaculada+Concepción,+Jerez" target="_blank" class="font-semibold hover:underline">Parroquia de la Inmaculada</a> <p class="text-sm mt-1 text-gray-600">Impresionante fachada barroca.</p> </div><div class="p-2"> <a href="https://www.google.com/maps/search/?api=1&query=Santuario+de+Nuestra+Señora+de+la+Soledad,+Jerez" target="_blank" class="font-semibold hover:underline">Santuario de la Soledad</a> <p class="text-sm mt-1 text-gray-600">Importante centro de fe neoclásico.</p> </div><div class="p-2"> <a href="https://www.google.com/maps/search/?api=1&query=Teatro+Hinojosa,+Jerez" target="_blank" class="font-semibold hover:underline">Teatro Hinojosa</a> <p class="text-sm mt-1 text-gray-600">Una joya arquitectónica del siglo XIX.</p> </div><div class="p-2"> <a href="https://www.google.com/maps/search/?api=1&query=Casa+Museo+Ramón+López+Velarde,+Jerez" target="_blank" class="font-semibold hover:underline">Museo Ramón López Velarde</a> <p class="text-sm mt-1 text-gray-600">Un viaje a la vida y obra del poeta.</p> </div><div class="p-2"> <a href="https://www.google.com/maps/search/?api=1&query=Panteón+de+Dolores,+Jerez" target="_blank" class="font-semibold hover:underline">Panteón de Dolores</a> <p class="text-sm mt-1 text-gray-600">Un museo al aire libre con mausoleos de cantera.</p> </div></div></div>
+                    <div><h2 class="font-serif-elegant text-3xl brand-color-text mb-6 text-center">Bares y Cantinas Típicas Jerezanas</h2><div class="grid md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-4 text-left"><div class="p-2"> <a href="https://www.google.com/maps/search/?api=1&query=Bar+Tizoc+Jerez" target="_blank" class="font-semibold hover:underline">Bar Tizoc</a> <p class="text-sm mt-1 text-gray-600">De las cantinas más antiguas y con tradición.</p> </div><div class="p-2"> <a href="https://www.google.com/maps/search/?api=1&query=Bar+Velarde+Jerez" target="_blank" class="font-semibold hover:underline">Bar Velarde</a> <p class="text-sm mt-1 text-gray-600">Una cantina histórica con un ambiente poético.</p> </div><div class="p-2"> <a href="https://www.google.com/maps/search/?api=1&query=La+Bár-bara+Jerez" target="_blank" class="font-semibold hover:underline">La Bár-bara</a> <p class="text-sm mt-1 text-gray-600">Ideal para disfrutar de buenos tragos y música.</p> </div><div class="p-2"> <a href="https://www.google.com/maps/search/?api=1&query=Mi+Cantina+Carta+Blanca+Jerez" target="_blank" class="font-semibold hover:underline">Mi Cantina Carta Blanca</a> <p class="text-sm mt-1 text-gray-600">La cantina más icónica de Jerez, llena de historia.</p> </div></div></div>
+                </div>
+                
+                <div class="mt-12 text-center">
+                    <button id="backToRsvpBtn" class="text-sm brand-color-text font-semibold hover:underline transition-colors">
+                        ← Volver a la invitación
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                emailjs.init({ publicKey: "T9Ciq_eAM2E5LcYuX" });
+            } catch (error) {
+                console.error("Failed to initialize EmailJS:", error);
+            }
+
+            const rsvpForm = document.getElementById('rsvpForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const submitText = document.getElementById('submitText');
+            const submitSpinner = document.getElementById('submitSpinner');
+            const attendanceSelect = document.getElementById('attendance');
+            const guestCountContainer = document.getElementById('guestCountContainer');
+            const guestCountInput = document.getElementById('guestCount');
+            const travelQuestionContainer = document.getElementById('travelQuestionContainer');
+            const companionsContainer = document.getElementById('companionsContainer');
+            const invitationView = document.getElementById('invitationView');
+            const confirmationView = document.getElementById('confirmationView');
+            const confirmationTitle = document.getElementById('confirmationTitle');
+            const travelerInfo = document.getElementById('travelerInfo');
+            const backToRsvpBtn = document.getElementById('backToRsvpBtn');
+            const errorMessage = document.getElementById('errorMessage');
+
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+                setTimeout(() => { errorMessage.style.display = 'none'; }, 5000);
+            }
+
+            function setSubmitButtonState(loading = false) {
+                submitBtn.disabled = loading;
+                submitText.style.display = loading ? 'none' : 'inline';
+                submitSpinner.classList.toggle('hidden', !loading);
+            }
+
+            function validateForm() {
+                if (document.getElementById('fullName').value.trim() === '') {
+                    showError('Por favor, ingresa tu nombre completo.');
+                    return false;
+                }
+                if (document.getElementById('phone').value.trim() === '' || !/^\d{10}$/.test(document.getElementById('phone').value.replace(/\D/g, ''))) {
+                    showError('Por favor, ingresa un teléfono válido de 10 dígitos.');
+                    return false;
+                }
+                if (attendanceSelect.value === '') {
+                    showError('Por favor, elige si podrás acompañarnos.');
+                    return false;
+                }
+                if (attendanceSelect.value === 'si' && !document.querySelector('input[name="travel"]:checked')) {
+                    showError('Por favor, indica si viajas desde fuera de Zacatecas.');
+                    return false;
+                }
+                return true;
+            }
+
+            function generateCompanionFields(count) {
+                companionsContainer.innerHTML = '';
+                if (isNaN(count) || count <= 1) return;
+                let fieldsHTML = '';
+                for (let i = 1; i < count; i++) {
+                    fieldsHTML += `
+                        <div class="companion-card border brand-color-border rounded-lg p-4 mt-4 bg-gray-50"><p class="font-semibold brand-color-text mb-3">Acompañante ${i + 1}</p><div class="space-y-3">
+                            <div><label for="companionName${i}" class="text-sm font-medium">Nombre: <span class="text-red-500">*</span></label><input type="text" id="companionName${i}" required class="w-full text-sm px-3 py-2 border brand-color-border rounded-lg"></div>
+                            <div><label for="companionType${i}" class="text-sm font-medium">Tipo:</label><select id="companionType${i}" class="companion-type-select w-full text-sm px-3 py-2 border brand-color-border rounded-lg bg-white appearance-none"><option value="adulto">Adulto</option><option value="niño">Niño</option></select></div>
+                            <div class="age-container dynamic-field"><label for="companionAge${i}" class="text-sm font-medium">Edad del niño:</label><input type="number" id="companionAge${i}" min="0" max="17" class="w-full text-sm px-3 py-2 border brand-color-border rounded-lg"></div>
+                        </div></div>`;
+                }
+                companionsContainer.innerHTML = fieldsHTML;
+            }
+            
+            function switchView(hide, show) { 
+                hide.classList.add('section-hidden'); 
+                setTimeout(() => { 
+                    show.classList.remove('section-hidden'); 
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 50); 
+            }
+
+            attendanceSelect.addEventListener('change', function() {
+                const isAttending = this.value === 'si';
+                guestCountContainer.classList.toggle('visible', isAttending);
+                travelQuestionContainer.classList.toggle('visible', isAttending);
+                if (!isAttending) {
+                    guestCountInput.value = 1;
+                    companionsContainer.innerHTML = '';
+                }
+            });
+
+            guestCountInput.addEventListener('input', () => generateCompanionFields(parseInt(guestCountInput.value, 10)));
+            
+            companionsContainer.addEventListener('change', function(event) {
+                if (event.target.classList.contains('companion-type-select')) {
+                    const ageContainer = event.target.closest('.companion-card').querySelector('.age-container');
+                    ageContainer.classList.toggle('visible', event.target.value === 'niño');
+                }
+            });
+
+            rsvpForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                if (!validateForm()) return;
+                setSubmitButtonState(true);
+
+                const fullName = document.getElementById('fullName').value.trim();
+                let companionsDetails = 'No aplica';
+                const guestCount = parseInt(guestCountInput.value, 10);
+                if (attendanceSelect.value === 'si' && guestCount > 1) {
+                    companionsDetails = '';
+                    for (let i = 1; i < guestCount; i++) {
+                        const name = document.getElementById(`companionName${i}`).value;
+                        const type = document.getElementById(`companionType${i}`).value;
+                        let detail = `Acompañante ${i + 1}: ${name} (${type})`;
+                        if (type === 'niño') {
+                            const age = document.getElementById(`companionAge${i}`).value;
+                            detail += `, Edad: ${age || 'No especificada'}`;
+                        }
+                        companionsDetails += detail + '\n';
+                    }
+                }
+            
+                const attendanceText = attendanceSelect.options[attendanceSelect.selectedIndex].text;
+                const travelChoice = document.querySelector('input[name="travel"]:checked');
+
+                const templateParams = {
+                    fullName: fullName,
+                    phone: document.getElementById('phone').value,
+                    attendance: attendanceText,
+                    guestCount: attendanceSelect.value === 'si' ? guestCount : '0',
+                    companionsDetails: companionsDetails,
+                    travel: (travelChoice) ? (travelChoice.value === 'si' ? 'Sí' : 'No') : 'No aplica'
+                };
+
+                emailjs.send('service_bjgzdxj', 'template_of214gp', templateParams)
+                    .then(response => {
+                       console.log('Email sent successfully!', response.status, response.text);
+                    }, error => {
+                       console.log('Failed to send email.', error);
+                       showError('Hubo un problema al enviar tu confirmación.');
+                    });
+
+                if (attendanceSelect.value === 'si') {
+                    const guestFirstName = fullName.split(' ')[0];
+                    confirmationTitle.textContent = `¡Gracias, ${guestFirstName}!`;
+                    
+                    if (travelChoice && travelChoice.value === 'si') {
+                        travelerInfo.classList.remove('hidden');
+                    } else {
+                        travelerInfo.classList.add('hidden');
+                    }
+                    switchView(invitationView, confirmationView);
+                } else {
+                    const guestFirstName = fullName.split(' ')[0];
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'message-box success-message';
+                    messageDiv.style.display = 'block';
+                    messageDiv.textContent = `Gracias por hacérnoslo saber, ${guestFirstName}. Tu respuesta ha sido enviada.`;
+                    rsvpForm.insertAdjacentElement('afterend', messageDiv);
+                    setTimeout(() => {
+                        messageDiv.remove();
+                        rsvpForm.reset();
+                        travelQuestionContainer.classList.remove('visible');
+                    }, 5000);
+                }
+                setSubmitButtonState(false);
+            });
+            
+            backToRsvpBtn.addEventListener('click', () => {
+                rsvpForm.reset();
+                guestCountContainer.classList.remove('visible');
+                travelQuestionContainer.classList.remove('visible');
+                companionsContainer.innerHTML = '';
+                confirmationTitle.textContent = '¡Gracias por confirmar!';
+                switchView(confirmationView, invitationView);
+            });
+        });
+    </script>
+</body>
+</html>
