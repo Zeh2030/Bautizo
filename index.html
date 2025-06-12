@@ -139,41 +139,43 @@
             border-color: #C1A59B;
         }
 
-        /* Scroll down indicator */
+        /* UPDATED Scroll down indicator */
         .scroll-indicator {
             position: absolute;
-            bottom: 2rem;
+            bottom: 2.5rem;
             left: 50%;
             transform: translateX(-50%);
             z-index: 10;
-            background-color: rgba(41, 37, 36, 0.7); /* Semi-transparent dark background */
+            background-color: rgba(0, 0, 0, 0.5); 
             color: white;
-            padding: 0.5rem 1rem;
+            padding: 0.6rem 1.2rem;
             border-radius: 9999px;
             display: flex;
             align-items: center;
             gap: 0.5rem;
             font-size: 0.875rem;
             font-weight: 500;
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
             transition: opacity 0.5s ease;
             pointer-events: none;
         }
         .scroll-indicator svg {
-            width: 1.25rem;
-            height: 1.25rem;
-            animation: bounce 2s infinite;
+            width: 1rem;
+            height: 1rem;
+            animation: bounce-subtle 2.5s infinite;
         }
-        @keyframes bounce {
+        @keyframes bounce-subtle {
             0%, 20%, 50%, 80%, 100% {
                 transform: translateY(0);
             }
             40% {
-                transform: translateY(-10px);
+                transform: translateY(-8px);
             }
             60% {
-                transform: translateY(-5px);
+                transform: translateY(-4px);
             }
         }
     </style>
@@ -194,8 +196,8 @@
                     
                     <!-- Scroll Down Indicator -->
                     <div id="scrollIndicator" class="scroll-indicator">
-                        <span>Desliza hacia abajo</span>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <span>desliza para confirmar</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 13l-7 7-7-7m14-8l-7 7-7-7"></path></svg>
                     </div>
                 </div>
 
@@ -556,4 +558,3 @@
     </script>
 </body>
 </html>
-
