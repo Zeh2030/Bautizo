@@ -146,7 +146,7 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 10;
-            background-color: rgba(0, 0, 0, 0.5); 
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6));
             color: white;
             padding: 0.6rem 1.2rem;
             border-radius: 9999px;
@@ -157,14 +157,14 @@
             font-weight: 500;
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
             transition: opacity 0.5s ease;
             pointer-events: none;
         }
         .scroll-indicator svg {
-            width: 1rem;
-            height: 1rem;
+            width: 1.25rem;
+            height: 1.25rem;
             animation: bounce-subtle 2.5s infinite;
         }
         @keyframes bounce-subtle {
@@ -196,8 +196,10 @@
                     
                     <!-- Scroll Down Indicator -->
                     <div id="scrollIndicator" class="scroll-indicator">
-                        <span>desliza para confirmar</span>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 13l-7 7-7-7m14-8l-7 7-7-7"></path></svg>
+                        <span>Desliza para confirmar</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
                     </div>
                 </div>
 
